@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://wuov3qqkqij8"]
+
+[ext_resource type="Texture2D" uid="uid://dtb4671cocuvj" path="res://images.jpg" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://766jsikflxl" path="res://Player.tscn" id="2_h2yge"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
+size = Vector2(332.5, 153)
+
+[node name="Main" type="Node2D" unique_id=819029681]
+
+[node name="Level1" type="Node2D" parent="." unique_id=1292201118]
+
+[node name="Plataform" type="StaticBody2D" parent="Level1" unique_id=1998957341]
+position = Vector2(211, 164)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Level1/Plataform" unique_id=278539317]
+texture = ExtResource("1_0xm2m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level1/Plataform" unique_id=1671909049]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Plataform2" type="StaticBody2D" parent="Level1" unique_id=1119519951]
+position = Vector2(667, 168)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Level1/Plataform2" unique_id=429140823]
+texture = ExtResource("1_0xm2m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level1/Plataform2" unique_id=1834555393]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Plataform3" type="StaticBody2D" parent="Level1" unique_id=397704665]
+position = Vector2(218, 418)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Level1/Plataform3" unique_id=229124586]
+texture = ExtResource("1_0xm2m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level1/Plataform3" unique_id=718885992]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Plataform4" type="StaticBody2D" parent="Level1" unique_id=717683831]
+position = Vector2(549, 420)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Level1/Plataform4" unique_id=1441339775]
+texture = ExtResource("1_0xm2m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level1/Plataform4" unique_id=1054823288]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Player" parent="Level1" unique_id=410817847 instance=ExtResource("2_h2yge")]

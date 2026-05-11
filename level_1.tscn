@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://csm3qdyn0gvjq"]
+
+[ext_resource type="Texture2D" uid="uid://dtb4671cocuvj" path="res://images.jpg" id="1_hbghi"]
+[ext_resource type="PackedScene" uid="uid://766jsikflxl" path="res://Player.tscn" id="2_hn12h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
+size = Vector2(332.5, 153)
+
+[node name="Level1" type="Node2D" unique_id=1175225247]
+
+[node name="Plataform" type="StaticBody2D" parent="." unique_id=455185951]
+position = Vector2(211, 164)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Plataform" unique_id=1534366323]
+texture = ExtResource("1_hbghi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataform" unique_id=1542821621]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Plataform2" type="StaticBody2D" parent="." unique_id=432527684]
+position = Vector2(667, 168)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Plataform2" unique_id=1071195893]
+texture = ExtResource("1_hbghi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataform2" unique_id=242653342]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Plataform3" type="StaticBody2D" parent="." unique_id=1773470412]
+position = Vector2(218, 418)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Plataform3" unique_id=1991132403]
+texture = ExtResource("1_hbghi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataform3" unique_id=268297286]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Plataform4" type="StaticBody2D" parent="." unique_id=1796863842]
+position = Vector2(549, 420)
+metadata/_edit_group_ = true
+
+[node name="Images" type="Sprite2D" parent="Plataform4" unique_id=1470773391]
+texture = ExtResource("1_hbghi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plataform4" unique_id=1946060751]
+shape = SubResource("RectangleShape2D_1bvp3")
+
+[node name="Player" parent="." unique_id=410817847 instance=ExtResource("2_hn12h")]
