@@ -1,15 +1,20 @@
 [gd_scene format=3 uid="uid://csm3qdyn0gvjq"]
 
-[ext_resource type="Texture2D" uid="uid://dtb4671cocuvj" path="res://images.jpg" id="1_hbghi"]
+[ext_resource type="Texture2D" uid="uid://dtb4671cocuvj" path="res://assets/images.jpg" id="1_hbghi"]
+[ext_resource type="Script" uid="uid://dpmlnywd742pv" path="res://level_1.gd" id="1_hn12h"]
 [ext_resource type="PackedScene" uid="uid://766jsikflxl" path="res://Player.tscn" id="2_hn12h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
 size = Vector2(332.5, 153)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hn12h"]
+size = Vector2(80, 130)
+
 [node name="Level1" type="Node2D" unique_id=1175225247]
+script = ExtResource("1_hn12h")
 
 [node name="Plataform" type="StaticBody2D" parent="." unique_id=455185951]
-position = Vector2(211, 164)
+position = Vector2(23, 573)
 metadata/_edit_group_ = true
 
 [node name="Images" type="Sprite2D" parent="Plataform" unique_id=1534366323]
@@ -19,7 +24,7 @@ texture = ExtResource("1_hbghi")
 shape = SubResource("RectangleShape2D_1bvp3")
 
 [node name="Plataform2" type="StaticBody2D" parent="." unique_id=432527684]
-position = Vector2(667, 168)
+position = Vector2(322, 573)
 metadata/_edit_group_ = true
 
 [node name="Images" type="Sprite2D" parent="Plataform2" unique_id=1071195893]
@@ -29,7 +34,7 @@ texture = ExtResource("1_hbghi")
 shape = SubResource("RectangleShape2D_1bvp3")
 
 [node name="Plataform3" type="StaticBody2D" parent="." unique_id=1773470412]
-position = Vector2(218, 418)
+position = Vector2(654, 573)
 metadata/_edit_group_ = true
 
 [node name="Images" type="Sprite2D" parent="Plataform3" unique_id=1991132403]
@@ -39,7 +44,7 @@ texture = ExtResource("1_hbghi")
 shape = SubResource("RectangleShape2D_1bvp3")
 
 [node name="Plataform4" type="StaticBody2D" parent="." unique_id=1796863842]
-position = Vector2(549, 420)
+position = Vector2(985, 573)
 metadata/_edit_group_ = true
 
 [node name="Images" type="Sprite2D" parent="Plataform4" unique_id=1470773391]
@@ -49,3 +54,14 @@ texture = ExtResource("1_hbghi")
 shape = SubResource("RectangleShape2D_1bvp3")
 
 [node name="Player" parent="." unique_id=410817847 instance=ExtResource("2_hn12h")]
+position = Vector2(418, 318)
+
+[node name="DeathZone" type="Area2D" parent="." unique_id=1541178472]
+position = Vector2(900, 435)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=1782778741]
+position = Vector2(-2, 0)
+shape = SubResource("RectangleShape2D_hn12h")
+
+[connection signal="body_entered" from="DeathZone" to="." method="_on_death_zone_body_entered"]
