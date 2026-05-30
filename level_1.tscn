@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://csm3qdyn0gvjq"]
 
-[ext_resource type="Texture2D" uid="uid://dtb4671cocuvj" path="res://assets/images.jpg" id="1_hbghi"]
+[ext_resource type="Texture2D" uid="uid://dtb4671cocuvj" path="res://images.jpg" id="1_hbghi"]
 [ext_resource type="Script" uid="uid://dpmlnywd742pv" path="res://level_1.gd" id="1_hn12h"]
 [ext_resource type="PackedScene" uid="uid://766jsikflxl" path="res://Player.tscn" id="2_hn12h"]
 

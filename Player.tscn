@@ -295,8 +295,9 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ctcj5"]
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=410817847]
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=410817847 node_paths=PackedStringArray("shoot_spawn_point")]
 script = ExtResource("1_xhfnw")
+shoot_spawn_point = NodePath("Marker2D")
 metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=219153400]
@@ -307,3 +308,5 @@ frame_progress = 0.75068575
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=683960227]
 scale = Vector2(1, 0.9)
 shape = SubResource("CapsuleShape2D_ctcj5")
+
+[node name="Marker2D" type="Marker2D" parent="." unique_id=679063392]
