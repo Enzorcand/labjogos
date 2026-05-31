@@ -295,7 +295,13 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ctcj5"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_dtqjt"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_5ncpa"]
+load_path = "res://.godot/imported/FullBar.png-8ae19b7dd4521eb93afef95a6d1fdd82.ctex"
+
 [node name="CharacterBody2D" type="CharacterBody2D" unique_id=410817847]
+position = Vector2(0, -4)
 script = ExtResource("1_xhfnw")
 metadata/_edit_group_ = true
 
@@ -304,7 +310,16 @@ sprite_frames = SubResource("SpriteFrames_0rwas")
 animation = &"walk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=683960227]
-scale = Vector2(1, 0.9)
 shape = SubResource("CapsuleShape2D_ctcj5")
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=679063392]
+
+[node name="ChargeBar" type="TextureProgressBar" parent="." unique_id=1154984222]
+offset_left = -21.0
+offset_top = -30.0
+offset_right = 24.0
+offset_bottom = -10.0
+max_value = 1.5
+step = 0.1
+texture_under = SubResource("AtlasTexture_dtqjt")
+texture_progress = SubResource("CompressedTexture2D_5ncpa")
