@@ -295,15 +295,13 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ctcj5"]
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=410817847 node_paths=PackedStringArray("shoot_spawn_point")]
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=410817847]
 script = ExtResource("1_xhfnw")
-shoot_spawn_point = NodePath("Marker2D")
 metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=219153400]
 sprite_frames = SubResource("SpriteFrames_0rwas")
-animation = &"idle"
-frame_progress = 0.75068575
+animation = &"walk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=683960227]
 scale = Vector2(1, 0.9)
