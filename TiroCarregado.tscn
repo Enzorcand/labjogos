@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://dwjmvkrbf660q"]
+
+[ext_resource type="Texture2D" uid="uid://bdednvbt1o6bh" path="res://assets/Bullets/ChargedShot.png" id="2_2xyk6"]
+
+[sub_resource type="GDScript" id="GDScript_ewjyh"]
+script/source = "extends \"res://bullet.gd\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7c3ih"]
+atlas = ExtResource("2_2xyk6")
+region = Rect2(0, 0, 15, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5hscs"]
+atlas = ExtResource("2_2xyk6")
+region = Rect2(15, 0, 15, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hds4u"]
+atlas = ExtResource("2_2xyk6")
+region = Rect2(30, 0, 15, 21)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6g4xp"]
+atlas = ExtResource("2_2xyk6")
+region = Rect2(45, 0, 15, 21)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_y1llb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7c3ih")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5hscs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hds4u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6g4xp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2xyk6"]
+
+[node name="Tiro Carregado" type="Area2D" unique_id=2112015976]
+script = SubResource("GDScript_ewjyh")
+speed = 400.0
+damage = 400
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1481813861]
+sprite_frames = SubResource("SpriteFrames_y1llb")
+frame_progress = 0.26082104
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=743259297]
+shape = SubResource("CircleShape2D_2xyk6")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
