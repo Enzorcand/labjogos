@@ -396,6 +396,10 @@ height = 45.333336
 [node name="Golem" type="CharacterBody2D" unique_id=173248879]
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_uo40p")
+patrol_speed = null
+chase_speed = null
+gravity = null
+vida_maxima = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471601881]
 position = Vector2(0, 1)

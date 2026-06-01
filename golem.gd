@@ -13,6 +13,13 @@ var vida_atual: int
 @onready var detection_area = $DetectionArea
 @onready var hitbox = $Hitbox
 
+# Variáveis do Ataque
+@export var attack_cooldown: float = 3.0
+var can_attack: bool = true
+
+# Carrega a cena do tiro (Verifique se o caminho e o nome estão exatos!)
+var cena_tiro = preload("res://golem_arm.tscn")
+
 # Definindo os estados possíveis (unindo os seus com os de movimento)
 enum Estado {
 	PATROL,
@@ -80,13 +87,19 @@ func _patrol_behavior() -> void:
 
 func _chase_behavior() -> void:
 	if player_ref != null:
+		var distance_to_player = abs(player_ref.global_position.x - global_position.x)
 		var direction_to_player = sign(player_ref.global_position.x - global_position.x)
 		
 		if direction_to_player != 0:
 			direction = direction_to_player
 			edge_checker.position.x = abs(edge_checker.position.x) * direction
 		
-		velocity.x = direction * chase_speed
+		# Se estiver a uma certa distância (ex: maior que 100 pixels) e o ataque estiver recarregado
+		if distance_to_player > 100.0 and can_attack:
+			iniciar_ataque_longo()
+		else:
+			# Só anda se não for atirar
+			velocity.x = direction * chase_speed
 
 
 func atualizar_animacao():
@@ -148,3 +161,36 @@ func receber_dano_percentual(porcentagem: float) -> void:
 	
 	if vida_atual <= 0:
 		morrer()
+		
+
+func iniciar_ataque_longo() -> void:
+	can_attack = false
+	mudar_estado(Estado.LONG_ATTACK)
+	
+	# Usamos um timer simples via código para esperar a animação "armar" o tiro (ex: 0.5s)
+	await get_tree().create_timer(0.5).timeout
+	
+	# Só atira se ainda estiver no estado de ataque longo (caso não tenha morrido/tomado stun nesse meio tempo)
+	if estado_atual == Estado.LONG_ATTACK:
+		_disparar_projetil()
+	
+	# Espera a animação de ataque terminar (ajuste esse tempo para o tamanho da sua animação)
+	await get_tree().create_timer(0.5).timeout
+	
+	# Volta a perseguir o jogador
+	mudar_estado(Estado.CHASE)
+	
+	# Inicia o tempo de recarga para poder atirar de novo
+	await get_tree().create_timer(attack_cooldown).timeout
+	can_attack = true
+
+func _disparar_projetil() -> void:
+	if cena_tiro:
+		var tiro = cena_tiro.instantiate()
+		
+		# Adicionamos o tiro ao cenário (pai do golem) para ele não se mover junto com o corpo do boss
+		get_parent().add_child(tiro)
+		
+		# Define de onde o tiro sai (global_position do boss + um avanço para frente)
+		tiro.global_position = global_position + Vector2(direction * 30, 0) # Ajuste esse '30' se sair de trás dele
+		tiro.direction = direction
