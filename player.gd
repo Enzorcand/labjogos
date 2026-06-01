@@ -8,7 +8,7 @@ const CHARGED_BULLET_SCENE = preload("res://TiroCarregado.tscn")
 @onready var shoot_spawn_point: Marker2D = $Marker2D 
 
 var is_dead: bool = false
-@export var forca_pulo_morte: float = -400.0 # Ajuste para o quão alto ele deve pular ao morrer
+@export var forca_pulo_morte: float = -400.0 
 
 # Charging variables
 var charge_time: float = 0.0
@@ -129,17 +129,10 @@ func hit_kill() -> void:
 	is_dead = true
 	velocity.y = forca_pulo_morte
 	
-	# 2. Zera a velocidade horizontal para ele cair reto (opcional)
 	velocity.x = 0
 	
-	# 3. Desabilita as colisões para atravessar o chão e paredes
-	# O uso do 'set_deferred' é obrigatório aqui para a Godot não dar erro na física
 	set_deferred("collision_layer", 0)
 	set_deferred("collision_mask", 0)
-	
-	# 4. Tocar animação de morte (opcional)
-	# $AnimatedSprite2D.play("morte")
-	
-	# 5. Reinicia a cena após um tempo (exemplo: 2 segundos)
+
 	await get_tree().create_timer(2.0).timeout
 	get_tree().reload_current_scene()

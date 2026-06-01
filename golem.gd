@@ -11,6 +11,7 @@ var vida_atual: int
 @onready var sprite = $AnimatedSprite2D
 @onready var edge_checker = $RayCast2D
 @onready var detection_area = $DetectionArea
+@onready var hitbox = $Hitbox
 
 # Definindo os estados possíveis (unindo os seus com os de movimento)
 enum Estado {
@@ -33,6 +34,7 @@ var player_ref: CharacterBody2D = null
 
 func _ready() -> void:
 
+	hitbox.body_entered.connect(_on_hitbox_body_entered)
 	vida_atual = vida_maxima
 	health_bar.max_value = vida_maxima
 	health_bar.value = vida_atual
@@ -40,38 +42,39 @@ func _ready() -> void:
 	detection_area.body_exited.connect(_on_detection_area_body_exited)
 	
 func _on_hitbox_body_entered(body: Node2D) -> void:
+	print("ALERTA: Algo bateu na Hitbox do Golem! Nome: ", body.name)
+	
 	if body.is_in_group("Player") or body.name == "Player":
+		print("SUCESSO: A engine reconheceu que é o Player!")
+		
 		if body.has_method("hit_kill"):
+			print("SUCESSO: A função hit_kill foi encontrada. Chamando agora...")
 			body.hit_kill()
+		else:
+			print("ERRO: O script do Player NÃO tem a função 'hit_kill' ou o nome está escrito errado.")
 
 func _physics_process(delta: float) -> void:
 	# Aplica gravidade
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# Executa a lógica dependendo do estado atual
 	match estado_atual:
 		Estado.PATROL:
 			_patrol_behavior()
 		Estado.CHASE:
 			_chase_behavior()
 		_: 
-			# Se estiver atacando, usando laser ou "endure", ele para de andar
 			velocity.x = move_toward(velocity.x, 0, patrol_speed)
 
-	# Aplica o movimento
 	move_and_slide()
 	
-	# Atualiza a direção do sprite e as animações
 	atualizar_animacao()
 
-# --- COMPORTAMENTOS DE MOVIMENTO ---
 
 func _patrol_behavior() -> void:
-	# Bateu na parede ou chegou no fim do chão
 	if is_on_wall() or (is_on_floor() and not edge_checker.is_colliding()):
 		direction *= -1
-		edge_checker.position.x *= -1 # Ajusta o RayCast
+		edge_checker.position.x *= -1 
 
 	velocity.x = direction * patrol_speed
 
@@ -85,19 +88,16 @@ func _chase_behavior() -> void:
 		
 		velocity.x = direction * chase_speed
 
-# --- CONTROLE DE ANIMAÇÕES E ESTADOS ---
 
 func atualizar_animacao():
-	# Vira o sprite para a direção do movimento
 	if direction == 1:
 		sprite.flip_h = false
 	elif direction == -1:
 		sprite.flip_h = true
 
-	# Reproduz a animação de acordo com o estado
 	match estado_atual:
 		Estado.PATROL:
-			sprite.play("idle") # Substitua por "walk" ou "andar" se você tiver essa animação
+			sprite.play("idle")
 		Estado.CHASE:
 			sprite.play("idle") # Substitua por "run" ou "correr" se tiver
 		Estado.IDLE:
@@ -140,13 +140,11 @@ func morrer() -> void:
 	queue_free() # Remove o Golem do jogo
 		
 func receber_dano_percentual(porcentagem: float) -> void:
-	# Calcula o valor do dano baseado na vida máxima
 	var dano_calculado = (vida_maxima * porcentagem) / 100.0
 	
-	vida_atual -= int(dano_calculado) # Converte para inteiro caso dê número quebrado
+	vida_atual -= int(dano_calculado)
 	health_bar.value = vida_atual
 	
-	# Efeito visual opcional de piscar em vermelho poderia entrar aqui
 	
 	if vida_atual <= 0:
 		morrer()
