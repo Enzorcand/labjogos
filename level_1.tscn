@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://csm3qdyn0gvjq"]
 
 [ext_resource type="Texture2D" uid="uid://dtb4671cocuvj" path="res://images.jpg" id="1_hbghi"]
-[ext_resource type="Script" uid="uid://dpmlnywd742pv" path="res://level_1.gd" id="1_hn12h"]
+[ext_resource type="Script" path="res://level_1.gd" id="1_hn12h"]
 [ext_resource type="PackedScene" uid="uid://766jsikflxl" path="res://Player.tscn" id="2_hn12h"]
+[ext_resource type="PackedScene" uid="uid://ch5fb2s4fjduo" path="res://golem.tscn" id="4_ihfcg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
 size = Vector2(332.5, 153)
@@ -63,5 +64,8 @@ metadata/_edit_group_ = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=1782778741]
 position = Vector2(-2, 0)
 shape = SubResource("RectangleShape2D_hn12h")
+
+[node name="Golem" parent="." unique_id=173248879 instance=ExtResource("4_ihfcg")]
+position = Vector2(106, 445.00003)
 
 [connection signal="body_entered" from="DeathZone" to="." method="_on_death_zone_body_entered"]
