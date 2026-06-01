@@ -7,6 +7,9 @@ const CHARGED_BULLET_SCENE = preload("res://TiroCarregado.tscn")
 @onready var charge_bar = $ChargeBar
 @onready var shoot_spawn_point: Marker2D = $Marker2D 
 
+var is_dead: bool = false
+@export var forca_pulo_morte: float = -400.0 # Ajuste para o quão alto ele deve pular ao morrer
+
 # Charging variables
 var charge_time: float = 0.0
 const MAX_CHARGE_TIME: float = 1.5 # Seconds needed for full charge
@@ -22,6 +25,10 @@ func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+		
+	if is_dead:
+		move_and_slide()
+		return
 
 	# Handle jump.
 	if Input.is_action_just_pressed("Jump") and is_on_floor() and not Input.is_action_pressed("Lock"):
@@ -51,7 +58,6 @@ func _physics_process(delta: float) -> void:
 	handle_shooting(delta)
 	animate()
 	move_and_slide()
-
 
 func animate():
 	if facing_direction > 0:
@@ -115,3 +121,25 @@ func fire_bullet(bullet_scene: PackedScene) -> void:
 	bullet_instance.rotation = aiming_direction.angle()
 	
 	get_tree().current_scene.add_child(bullet_instance)
+	
+func hit_kill() -> void:
+	
+	if is_dead:
+		return 
+	is_dead = true
+	velocity.y = forca_pulo_morte
+	
+	# 2. Zera a velocidade horizontal para ele cair reto (opcional)
+	velocity.x = 0
+	
+	# 3. Desabilita as colisões para atravessar o chão e paredes
+	# O uso do 'set_deferred' é obrigatório aqui para a Godot não dar erro na física
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
+	
+	# 4. Tocar animação de morte (opcional)
+	# $AnimatedSprite2D.play("morte")
+	
+	# 5. Reinicia a cena após um tempo (exemplo: 2 segundos)
+	await get_tree().create_timer(2.0).timeout
+	get_tree().reload_current_scene()

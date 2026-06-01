@@ -38,6 +38,11 @@ func _ready() -> void:
 	health_bar.value = vida_atual
 	detection_area.body_entered.connect(_on_detection_area_body_entered)
 	detection_area.body_exited.connect(_on_detection_area_body_exited)
+	
+func _on_hitbox_body_entered(body: Node2D) -> void:
+	if body.is_in_group("Player") or body.name == "Player":
+		if body.has_method("hit_kill"):
+			body.hit_kill()
 
 func _physics_process(delta: float) -> void:
 	# Aplica gravidade
@@ -112,23 +117,6 @@ func mudar_estado(novo_estado: int):
 	if estado_atual != novo_estado:
 		estado_atual = novo_estado
 
-# --- SINAIS DE DETECÇÃO DO JOGADOR ---
-
-# Função para receber dano (O jogador ou projétil deve chamar essa função)
-func receber_dano(quantidade: int) -> void:
-	vida_atual -= quantidade
-	health_bar.value = vida_atual
-	
-	# Opcional: Tocar uma animação de "Dano" ou mudar a cor do sprite para vermelho por 1 segundo aqui
-	
-	if vida_atual <= 0:
-		morrer()
-
-func morrer() -> void:
-	# Aqui você pode tocar uma animação de morte, dropar itens, etc.
-	print("Golem foi derrotado!")
-	queue_free() # Remove o Golem do jogo
-
 func _on_detection_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player") or body.name == "Player":
 		player_ref = body
@@ -138,8 +126,19 @@ func _on_detection_area_body_exited(body: Node2D) -> void:
 	if body == player_ref:
 		player_ref = null
 		mudar_estado(Estado.PATROL)
+
+func receber_dano(quantidade: int) -> void:
+	vida_atual -= quantidade
+	health_bar.value = vida_atual
+	
+	
+	if vida_atual <= 0:
+		morrer()
+
+func morrer() -> void:
+	print("Golem foi derrotado!")
+	queue_free() # Remove o Golem do jogo
 		
-# Função que recebe um valor de 0 a 100 e desconta essa porcentagem da vida máxima
 func receber_dano_percentual(porcentagem: float) -> void:
 	# Calcula o valor do dano baseado na vida máxima
 	var dano_calculado = (vida_maxima * porcentagem) / 100.0
