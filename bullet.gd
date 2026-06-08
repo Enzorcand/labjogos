@@ -19,3 +19,5 @@ func _on_body_entered(body: Node) -> void:
 		body.receber_dano_percentual(damage)
 		
 	queue_free()
+	
+	

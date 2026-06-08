@@ -11,6 +11,14 @@ var vida_atual: int
 @onready var sprite = $AnimatedSprite2D
 @onready var edge_checker = $RayCast2D
 @onready var detection_area = $DetectionArea
+@onready var hitbox = $Hitbox
+
+# Variáveis do Ataque
+@export var attack_cooldown: float = 3.0
+var can_attack: bool = true
+
+# Carrega a cena do tiro (Verifique se o caminho e o nome estão exatos!)
+var cena_tiro = preload("res://golem_arm.tscn")
 
 # Definindo os estados possíveis (unindo os seus com os de movimento)
 enum Estado {
@@ -33,66 +41,76 @@ var player_ref: CharacterBody2D = null
 
 func _ready() -> void:
 
+	hitbox.body_entered.connect(_on_hitbox_body_entered)
 	vida_atual = vida_maxima
 	health_bar.max_value = vida_maxima
 	health_bar.value = vida_atual
 	detection_area.body_entered.connect(_on_detection_area_body_entered)
 	detection_area.body_exited.connect(_on_detection_area_body_exited)
+	
+func _on_hitbox_body_entered(body: Node2D) -> void:
+	print("ALERTA: Algo bateu na Hitbox do Golem! Nome: ", body.name)
+	
+	if body.is_in_group("Player") or body.name == "Player":
+		print("SUCESSO: A engine reconheceu que é o Player!")
+		
+		if body.has_method("hit_kill"):
+			print("SUCESSO: A função hit_kill foi encontrada. Chamando agora...")
+			body.hit_kill()
+		else:
+			print("ERRO: O script do Player NÃO tem a função 'hit_kill' ou o nome está escrito errado.")
 
 func _physics_process(delta: float) -> void:
 	# Aplica gravidade
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-	# Executa a lógica dependendo do estado atual
 	match estado_atual:
 		Estado.PATROL:
 			_patrol_behavior()
 		Estado.CHASE:
 			_chase_behavior()
 		_: 
-			# Se estiver atacando, usando laser ou "endure", ele para de andar
 			velocity.x = move_toward(velocity.x, 0, patrol_speed)
 
-	# Aplica o movimento
 	move_and_slide()
 	
-	# Atualiza a direção do sprite e as animações
 	atualizar_animacao()
 
-# --- COMPORTAMENTOS DE MOVIMENTO ---
 
 func _patrol_behavior() -> void:
-	# Bateu na parede ou chegou no fim do chão
 	if is_on_wall() or (is_on_floor() and not edge_checker.is_colliding()):
 		direction *= -1
-		edge_checker.position.x *= -1 # Ajusta o RayCast
+		edge_checker.position.x *= -1 
 
 	velocity.x = direction * patrol_speed
 
 func _chase_behavior() -> void:
 	if player_ref != null:
+		var distance_to_player = abs(player_ref.global_position.x - global_position.x)
 		var direction_to_player = sign(player_ref.global_position.x - global_position.x)
 		
 		if direction_to_player != 0:
 			direction = direction_to_player
 			edge_checker.position.x = abs(edge_checker.position.x) * direction
 		
-		velocity.x = direction * chase_speed
+		# Se estiver a uma certa distância (ex: maior que 100 pixels) e o ataque estiver recarregado
+		if distance_to_player > 100.0 and can_attack:
+			iniciar_ataque_longo()
+		else:
+			# Só anda se não for atirar
+			velocity.x = direction * chase_speed
 
-# --- CONTROLE DE ANIMAÇÕES E ESTADOS ---
 
 func atualizar_animacao():
-	# Vira o sprite para a direção do movimento
 	if direction == 1:
 		sprite.flip_h = false
 	elif direction == -1:
 		sprite.flip_h = true
 
-	# Reproduz a animação de acordo com o estado
 	match estado_atual:
 		Estado.PATROL:
-			sprite.play("idle") # Substitua por "walk" ou "andar" se você tiver essa animação
+			sprite.play("idle")
 		Estado.CHASE:
 			sprite.play("idle") # Substitua por "run" ou "correr" se tiver
 		Estado.IDLE:
@@ -112,23 +130,6 @@ func mudar_estado(novo_estado: int):
 	if estado_atual != novo_estado:
 		estado_atual = novo_estado
 
-# --- SINAIS DE DETECÇÃO DO JOGADOR ---
-
-# Função para receber dano (O jogador ou projétil deve chamar essa função)
-func receber_dano(quantidade: int) -> void:
-	vida_atual -= quantidade
-	health_bar.value = vida_atual
-	
-	# Opcional: Tocar uma animação de "Dano" ou mudar a cor do sprite para vermelho por 1 segundo aqui
-	
-	if vida_atual <= 0:
-		morrer()
-
-func morrer() -> void:
-	# Aqui você pode tocar uma animação de morte, dropar itens, etc.
-	print("Golem foi derrotado!")
-	queue_free() # Remove o Golem do jogo
-
 func _on_detection_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player") or body.name == "Player":
 		player_ref = body
@@ -138,16 +139,58 @@ func _on_detection_area_body_exited(body: Node2D) -> void:
 	if body == player_ref:
 		player_ref = null
 		mudar_estado(Estado.PATROL)
-		
-# Função que recebe um valor de 0 a 100 e desconta essa porcentagem da vida máxima
-func receber_dano_percentual(porcentagem: float) -> void:
-	# Calcula o valor do dano baseado na vida máxima
-	var dano_calculado = (vida_maxima * porcentagem) / 100.0
-	
-	vida_atual -= int(dano_calculado) # Converte para inteiro caso dê número quebrado
+
+func receber_dano(quantidade: int) -> void:
+	vida_atual -= quantidade
 	health_bar.value = vida_atual
 	
-	# Efeito visual opcional de piscar em vermelho poderia entrar aqui
 	
 	if vida_atual <= 0:
 		morrer()
+
+func morrer() -> void:
+	print("Golem foi derrotado!")
+	queue_free() # Remove o Golem do jogo
+		
+func receber_dano_percentual(porcentagem: float) -> void:
+	var dano_calculado = (vida_maxima * porcentagem) / 100.0
+	
+	vida_atual -= int(dano_calculado)
+	health_bar.value = vida_atual
+	
+	
+	if vida_atual <= 0:
+		morrer()
+		
+
+func iniciar_ataque_longo() -> void:
+	can_attack = false
+	mudar_estado(Estado.LONG_ATTACK)
+	
+	# Usamos um timer simples via código para esperar a animação "armar" o tiro (ex: 0.5s)
+	await get_tree().create_timer(0.5).timeout
+	
+	# Só atira se ainda estiver no estado de ataque longo (caso não tenha morrido/tomado stun nesse meio tempo)
+	if estado_atual == Estado.LONG_ATTACK:
+		_disparar_projetil()
+	
+	# Espera a animação de ataque terminar (ajuste esse tempo para o tamanho da sua animação)
+	await get_tree().create_timer(0.5).timeout
+	
+	# Volta a perseguir o jogador
+	mudar_estado(Estado.CHASE)
+	
+	# Inicia o tempo de recarga para poder atirar de novo
+	await get_tree().create_timer(attack_cooldown).timeout
+	can_attack = true
+
+func _disparar_projetil() -> void:
+	if cena_tiro:
+		var tiro = cena_tiro.instantiate()
+		
+		# Adicionamos o tiro ao cenário (pai do golem) para ele não se mover junto com o corpo do boss
+		get_parent().add_child(tiro)
+		
+		# Define de onde o tiro sai (global_position do boss + um avanço para frente)
+		tiro.global_position = global_position + Vector2(direction * 30, 0) # Ajuste esse '30' se sair de trás dele
+		tiro.direction = direction

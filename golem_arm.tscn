@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bdwihn0esnn6b"]
+
+[ext_resource type="Script" uid="uid://cfdpea41k7tav" path="res://GolemArm.gd" id="1_pcf7e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n6iuh"]
+size = Vector2(40, 23)
+
+[node name="GolemArm" type="Area2D" unique_id=21512680]
+script = ExtResource("1_pcf7e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=590884700]
+position = Vector2(20, 11.5)
+shape = SubResource("RectangleShape2D_n6iuh")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1643837207]
+offset_right = 39.0
+offset_bottom = 23.0

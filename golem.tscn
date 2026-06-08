@@ -379,29 +379,32 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rka8t"]
-radius = 23.0
-height = 50.0
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5hph3"]
 size = Vector2(345, 178)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uo40p"]
 bg_color = Color(0.5024437, 0.7732663, 0.2787204, 1)
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rka8t"]
+radius = 23.0
+height = 50.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uo40p"]
+radius = 22.0
+height = 45.333336
+
 [node name="Golem" type="CharacterBody2D" unique_id=173248879]
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_uo40p")
+patrol_speed = null
+chase_speed = null
+gravity = null
+vida_maxima = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471601881]
 position = Vector2(0, 1)
 sprite_frames = SubResource("SpriteFrames_2bq06")
 animation = &"up"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=341307091]
-position = Vector2(0, -1)
-rotation = 1.5707964
-shape = SubResource("CapsuleShape2D_rka8t")
 
 [node name="DetectionArea" type="Area2D" parent="." unique_id=2047026550]
 
@@ -419,3 +422,14 @@ offset_bottom = -25.666668
 theme_override_styles/fill = SubResource("StyleBoxFlat_uo40p")
 value = 100.0
 show_percentage = false
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=840870]
+
+[node name="ColisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=341307091]
+position = Vector2(0, -1)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_rka8t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1420182784]
+position = Vector2(0, -0.6666667)
+shape = SubResource("CapsuleShape2D_uo40p")
