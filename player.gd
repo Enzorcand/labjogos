@@ -21,6 +21,9 @@ const JUMP_VELOCITY = -400.0
 
 var aiming_direction: Vector2 = Vector2.RIGHT
 
+func _ready() -> void:
+	add_to_group("Player")
+
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor():

@@ -168,8 +168,7 @@ func iniciar_ataque_longo() -> void:
 	mudar_estado(Estado.LONG_ATTACK)
 	
 	# Usamos um timer simples via código para esperar a animação "armar" o tiro (ex: 0.5s)
-	await get_tree().create_timer(0.5).timeout
-	
+	await get_tree().create_timer(1).timeout
 	# Só atira se ainda estiver no estado de ataque longo (caso não tenha morrido/tomado stun nesse meio tempo)
 	if estado_atual == Estado.LONG_ATTACK:
 		_disparar_projetil()
@@ -191,6 +190,8 @@ func _disparar_projetil() -> void:
 		# Adicionamos o tiro ao cenário (pai do golem) para ele não se mover junto com o corpo do boss
 		get_parent().add_child(tiro)
 		
-		# Define de onde o tiro sai (global_position do boss + um avanço para frente)
-		tiro.global_position = global_position + Vector2(direction * 30, 0) # Ajuste esse '30' se sair de trás dele
-		tiro.direction = direction
+		# Define de onde o tiro sai (global_position do boss + um avanço para frente, afastado da hitbox)
+		tiro.global_position = global_position + Vector2(direction * 60, -30) 
+		
+		# Usa set() para atribuir a variável de script do nó
+		tiro.set("direction", direction)

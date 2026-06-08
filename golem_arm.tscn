@@ -1,17 +1,51 @@
 [gd_scene format=3 uid="uid://bdwihn0esnn6b"]
 
 [ext_resource type="Script" uid="uid://cfdpea41k7tav" path="res://GolemArm.gd" id="1_pcf7e"]
+[ext_resource type="Texture2D" uid="uid://dsd88gtmaooyr" path="res://assets/Golem/weapon PNG/arm_projectile_glowing.png" id="2_n6iuh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n6iuh"]
 size = Vector2(40, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fey8e"]
+atlas = ExtResource("2_n6iuh")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rm56f"]
+atlas = ExtResource("2_n6iuh")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d7i4h"]
+atlas = ExtResource("2_n6iuh")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0m2tn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fey8e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rm56f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d7i4h")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="GolemArm" type="Area2D" unique_id=21512680]
 script = ExtResource("1_pcf7e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=590884700]
+light_mask = 1023
+visibility_layer = 1023
 position = Vector2(20, 11.5)
 shape = SubResource("RectangleShape2D_n6iuh")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1643837207]
-offset_right = 39.0
-offset_bottom = 23.0
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=759983268]
+position = Vector2(-7, 23)
+sprite_frames = SubResource("SpriteFrames_0m2tn")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

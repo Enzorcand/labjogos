@@ -300,9 +300,10 @@ animations = [{
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_5ncpa"]
 load_path = "res://.godot/imported/FullBar.png-8ae19b7dd4521eb93afef95a6d1fdd82.ctex"
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=410817847]
+[node name="Player" type="CharacterBody2D" unique_id=410817847]
 position = Vector2(0, -4)
 script = ExtResource("1_xhfnw")
+forca_pulo_morte = null
 metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=219153400]
