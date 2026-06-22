@@ -1,7 +1,7 @@
 extends Area2D
 
 @export var speed: float = 200.0 # Velocidade de perseguição
-@export var turn_speed: float = 3.0 # Velocidade FIXA de rotação em radianos/segundo
+@export var turn_speed: float = 1.0 # Velocidade FIXA de rotação em radianos/segundo
 var direction: int = 1 
 var player_ref: Node2D = null
 
@@ -18,6 +18,8 @@ func _ready() -> void:
 		queue_free()
 
 func _physics_process(delta: float) -> void:
+	speed = speed * 1.01
+	turn_speed = turn_speed * 1.005
 	if player_ref == null:
 		var players_na_cena = get_tree().get_nodes_in_group("Player")
 		if players_na_cena.size() > 0:

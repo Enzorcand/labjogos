@@ -13,6 +13,14 @@ var vida_atual: int
 @onready var detection_area = $DetectionArea
 @onready var hitbox = $Hitbox
 
+# Configurações de Flutuação
+@export var amplitude_flutuacao: float = 5.0 # Quantos pixels ele sobe e desce
+@export var velocidade_flutuacao: float = 3.0 # A rapidez do sobe e desce
+var tempo_flutuacao: float = 0.0
+var sprite_original_y: float = 0.0
+var hitbox_original_y: float = 0.0
+var detection_area_original_y: float = 0.0
+
 # Variáveis do Ataque
 @export var attack_cooldown: float = 3.0
 var can_attack: bool = true
@@ -41,13 +49,16 @@ var direction: int = 1
 var player_ref: CharacterBody2D = null
 
 func _ready() -> void:
-
 	hitbox.body_entered.connect(_on_hitbox_body_entered)
 	vida_atual = vida_maxima
 	health_bar.max_value = vida_maxima
 	health_bar.value = vida_atual
 	detection_area.body_entered.connect(_on_detection_area_body_entered)
 	detection_area.body_exited.connect(_on_detection_area_body_exited)
+	
+	sprite_original_y = sprite.position.y
+	hitbox_original_y = hitbox.position.y
+	detection_area_original_y = detection_area.position.y
 	
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	print("ALERTA: Algo bateu na Hitbox do Golem! Nome: ", body.name)
@@ -63,9 +74,6 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 
 func _physics_process(delta: float) -> void:
 	# Aplica gravidade
-	if not is_on_floor():
-		velocity.y += gravity * delta
-
 	match estado_atual:
 		Estado.PATROL:
 			_patrol_behavior()
@@ -73,11 +81,21 @@ func _physics_process(delta: float) -> void:
 			_chase_behavior()
 		_: 
 			velocity.x = move_toward(velocity.x, 0, patrol_speed)
+	# ... (O teu código de gravidade, match estado e move_and_slide continuam iguais aqui) ...
 
 	move_and_slide()
+	atualizar_animacao()
 	
-	if estado_atual != Estado.DIE: 
-		atualizar_animacao()
+	# EFEITO DE FLUTUAR (Para o Sprite e para as Hitboxes/Áreas)
+	if estado_atual != Estado.DIE:
+		tempo_flutuacao += delta
+		# Calcula o desvio usando a onda Seno
+		var movimento_onda = sin(tempo_flutuacao * velocidade_flutuacao) * amplitude_flutuacao
+		
+		# Aplica o movimento aos três elementos de forma sincronizada
+		sprite.position.y = sprite_original_y + movimento_onda
+		hitbox.position.y = hitbox_original_y + movimento_onda
+		detection_area.position.y = detection_area_original_y + movimento_onda
 
 
 func _patrol_behavior() -> void:
@@ -157,7 +175,6 @@ func morrer() -> void:
 	print("Golem foi derrotado!")
 	mudar_estado(Estado.DIE)
 	
-	# Desliga a hitbox e a área de deteção de forma segura para não haver erros de física
 	hitbox.set_deferred("monitoring", false)
 	hitbox.set_deferred("monitorable", false)
 	detection_area.set_deferred("monitoring", false)
@@ -179,19 +196,15 @@ func iniciar_ataque_longo() -> void:
 	can_attack = false
 	mudar_estado(Estado.LONG_ATTACK)
 	
-	# Usamos um timer simples via código para esperar a animação "armar" o tiro (ex: 0.5s)
 	await get_tree().create_timer(1).timeout
-	# Só atira se ainda estiver no estado de ataque longo (caso não tenha morrido/tomado stun nesse meio tempo)
+	
 	if estado_atual == Estado.LONG_ATTACK:
 		_disparar_projetil()
 	
-	# Espera a animação de ataque terminar (ajuste esse tempo para o tamanho da sua animação)
 	await get_tree().create_timer(0.5).timeout
 	
-	# Volta a perseguir o jogador
 	mudar_estado(Estado.CHASE)
 	
-	# Inicia o tempo de recarga para poder atirar de novo
 	await get_tree().create_timer(attack_cooldown).timeout
 	can_attack = true
 
@@ -199,11 +212,8 @@ func _disparar_projetil() -> void:
 	if cena_tiro:
 		var tiro = cena_tiro.instantiate()
 		
-		# Adicionamos o tiro ao cenário (pai do golem) para ele não se mover junto com o corpo do boss
 		get_parent().add_child(tiro)
-		
-		# Define de onde o tiro sai (global_position do boss + um avanço para frente, afastado da hitbox)
+	
 		tiro.global_position = global_position + Vector2(direction * 60, -30) 
 		
-		# Usa set() para atribuir a variável de script do nó
 		tiro.set("direction", direction)
