@@ -3,6 +3,22 @@
 [ext_resource type="Script" uid="uid://33br212dvsdo" path="res://golem.gd" id="1_uo40p"]
 [ext_resource type="Texture2D" uid="uid://dx57h2n3w4kqc" path="res://assets/Golem/PNG sheet/Character_sheet.png" id="2_m6pht"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_uo40p"]
+atlas = ExtResource("2_m6pht")
+region = Rect2(0, 800, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m6pht"]
+atlas = ExtResource("2_m6pht")
+region = Rect2(100, 800, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i6v8o"]
+atlas = ExtResource("2_m6pht")
+region = Rect2(200, 800, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sodic"]
+atlas = ExtResource("2_m6pht")
+region = Rect2(300, 800, 100, 100)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_j7kpp"]
 atlas = ExtResource("2_m6pht")
 region = Rect2(0, 300, 100, 100)
@@ -203,6 +219,23 @@ region = Rect2(900, 700, 100, 100)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_uo40p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m6pht")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i6v8o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sodic")
+}],
+"loop": false,
+"name": &"die",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_j7kpp")
 }, {
 "duration": 1.0,
@@ -396,15 +429,11 @@ height = 45.333336
 [node name="Golem" type="CharacterBody2D" unique_id=173248879]
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_uo40p")
-patrol_speed = null
-chase_speed = null
-gravity = null
-vida_maxima = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471601881]
 position = Vector2(0, 1)
 sprite_frames = SubResource("SpriteFrames_2bq06")
-animation = &"up"
+animation = &"die"
 
 [node name="DetectionArea" type="Area2D" parent="." unique_id=2047026550]
 

@@ -29,7 +29,8 @@ enum Estado {
 	LONG_ATTACK,
 	ENDURE,
 	UP,
-	LASER_ATTACK
+	LASER_ATTACK,
+	DIE
 }
 
 # Estado inicial
@@ -75,7 +76,8 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	
-	atualizar_animacao()
+	if estado_atual != Estado.DIE: 
+		atualizar_animacao()
 
 
 func _patrol_behavior() -> void:
@@ -125,10 +127,13 @@ func atualizar_animacao():
 			sprite.play("up")
 		Estado.LASER_ATTACK:
 			sprite.play("laser_attack")
+		Estado.DIE:
+			sprite.play("die")
 
 func mudar_estado(novo_estado: int):
 	if estado_atual != novo_estado:
 		estado_atual = novo_estado
+		atualizar_animacao()
 
 func _on_detection_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player") or body.name == "Player":
@@ -150,7 +155,13 @@ func receber_dano(quantidade: int) -> void:
 
 func morrer() -> void:
 	print("Golem foi derrotado!")
-	queue_free() # Remove o Golem do jogo
+	mudar_estado(Estado.DIE)
+	
+	# Desliga a hitbox e a área de deteção de forma segura para não haver erros de física
+	hitbox.set_deferred("monitoring", false)
+	hitbox.set_deferred("monitorable", false)
+	detection_area.set_deferred("monitoring", false)
+	detection_area.set_deferred("monitorable", false)
 		
 func receber_dano_percentual(porcentagem: float) -> void:
 	var dano_calculado = (vida_maxima * porcentagem) / 100.0
@@ -160,6 +171,7 @@ func receber_dano_percentual(porcentagem: float) -> void:
 	
 	
 	if vida_atual <= 0:
+		
 		morrer()
 		
 
