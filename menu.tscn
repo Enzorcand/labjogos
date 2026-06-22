@@ -64,20 +64,25 @@ offset_bottom = 95.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="IniciarJogo" type="Button" parent="VBoxContainer2" unique_id=199952929]
+[node name="IniciarJogo" type="Button" parent="VBoxContainer2" unique_id=199952929 groups=["buttons"]]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_lti8b")
 theme_override_font_sizes/font_size = 46
+toggle_mode = true
 text = "Iniciar jogo"
 
-[node name="Controles" type="Button" parent="VBoxContainer2" unique_id=1766083437]
+[node name="Controles" type="Button" parent="VBoxContainer2" unique_id=1766083437 groups=["buttons"]]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_lti8b")
 theme_override_font_sizes/font_size = 46
 text = "Controles"
 
-[node name="Sair" type="Button" parent="VBoxContainer2" unique_id=394874199]
+[node name="Sair" type="Button" parent="VBoxContainer2" unique_id=394874199 groups=["buttons"]]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_lti8b")
 theme_override_font_sizes/font_size = 46
 text = "Sair do jogo"
+
+[connection signal="pressed" from="VBoxContainer2/IniciarJogo" to="." method="_on_iniciar_jogo_pressed"]
+[connection signal="pressed" from="VBoxContainer2/Controles" to="." method="_on_controles_pressed"]
+[connection signal="pressed" from="VBoxContainer2/Sair" to="." method="_on_sair_pressed"]
