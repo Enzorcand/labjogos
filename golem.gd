@@ -12,6 +12,7 @@ var vida_atual: int
 @onready var edge_checker = $RayCast2D
 @onready var detection_area = $DetectionArea
 @onready var hitbox = $Hitbox
+@onready var colision = $colision
 
 # Configurações de Flutuação
 @export var amplitude_flutuacao: float = 5.0 # Quantos pixels ele sobe e desce
@@ -20,6 +21,7 @@ var tempo_flutuacao: float = 0.0
 var sprite_original_y: float = 0.0
 var hitbox_original_y: float = 0.0
 var detection_area_original_y: float = 0.0
+var colision_original_y: float = 0.0
 
 # Variáveis do Ataque
 @export var attack_cooldown: float = 3.0
