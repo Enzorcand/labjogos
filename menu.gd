@@ -19,7 +19,7 @@ func _on_iniciar_jogo_pressed() -> void:
 
 
 func _on_controles_pressed() -> void:
-	var _controls: bool = get_tree().change_scene_to_file("res://main.tscn")
+	var _controls: bool = get_tree().change_scene_to_file("res://Controles.tscn")
 
 
 func _on_sair_pressed() -> void:
