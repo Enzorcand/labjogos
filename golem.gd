@@ -23,6 +23,18 @@ var hitbox_original_y: float = 0.0
 var detection_area_original_y: float = 0.0
 var colision_original_y: float = 0.0
 
+# Configurações de Voo (Boss Voador)
+@export var altura_baixa: float = 250.0 # Posição Y quando voa baixo (ajusta no Inspetor)
+@export var altura_alta: float = 100.0  # Posição Y da plataforma (ajusta no Inspetor)
+@export var velocidade_voo: float = 120.0
+@export var aceleracao: float = 400.0 # Quão rápido ele faz curvas e arranca
+@export var distancia_ataque_x: float = 150.0 # Mantém uma certa distância do player
+
+# Controle da Altura
+var alvo_y: float = 0.0
+var tempo_troca_altura: float = 0.0
+@export var intervalo_troca: float = 6.0 # Troca de altura a cada 6 segundos
+
 # Variáveis do Ataque
 @export var attack_cooldown: float = 3.0
 var can_attack: bool = true
@@ -75,20 +87,36 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 			print("ERRO: O script do Player NÃO tem a função 'hit_kill' ou o nome está escrito errado.")
 
 func _physics_process(delta: float) -> void:
-	# Aplica gravidade
+	
+	# Controle automático de subida e descida (só acontece se ele estiver vivo)
+	if estado_atual != Estado.DIE:
+		tempo_troca_altura += delta
+		if tempo_troca_altura >= intervalo_troca:
+			tempo_troca_altura = 0.0
+			# Alterna entre as alturas alta e baixa
+			if alvo_y == altura_baixa:
+				alvo_y = altura_alta
+			else:
+				alvo_y = altura_baixa
+
+	# Máquina de Estados
 	match estado_atual:
 		Estado.PATROL:
-			_patrol_behavior()
+			_voo_patrol_behavior(delta)
 		Estado.CHASE:
-			_chase_behavior()
+			_voo_chase_behavior(delta)
+		Estado.DIE:
+			# Se morrer, a gravidade volta e ele cai no chão!
+			velocity.x = move_toward(velocity.x, 0, aceleracao * delta)
+			if not is_on_floor():
+				velocity.y += 980.0 * delta # Gravidade
 		_: 
-			velocity.x = move_toward(velocity.x, 0, patrol_speed)
-	# ... (O teu código de gravidade, match estado e move_and_slide continuam iguais aqui) ...
+			velocity = velocity.move_toward(Vector2.ZERO, aceleracao * delta)
 
 	move_and_slide()
 	atualizar_animacao()
 	
-	# EFEITO DE FLUTUAR (Para o Sprite e para as Hitboxes/Áreas)
+	# (Cola aqui em baixo o código da Flutuação com o sin() do passo anterior!)
 	if estado_atual != Estado.DIE:
 		tempo_flutuacao += delta
 		# Calcula o desvio usando a onda Seno
@@ -193,6 +221,44 @@ func receber_dano_percentual(porcentagem: float) -> void:
 		
 		morrer()
 		
+func _voo_patrol_behavior(delta: float) -> void:
+	# Como é um boss voador que espera pelo jogador, a patrulha dele é apenas ficar a flutuar no lugar
+	# Se quiseres, podes usar a mesma lógica do CHASE aqui mas usando pontos fixos do mapa!
+	var ponto_alvo_2d = Vector2(global_position.x, alvo_y)
+	var direcao_movimento = global_position.direction_to(ponto_alvo_2d)
+	
+	if global_position.distance_to(ponto_alvo_2d) > 10.0:
+		velocity = velocity.move_toward(direcao_movimento * velocidade_voo, aceleracao * delta)
+	else:
+		velocity = velocity.move_toward(Vector2.ZERO, aceleracao * delta)
+
+func _voo_chase_behavior(delta: float) -> void:
+	if player_ref != null:
+		# 1. Vira para o jogador
+		var direcao_x = sign(player_ref.global_position.x - global_position.x)
+		if direcao_x != 0:
+			direction = direcao_x
+		
+		# 2. Define o "Ponto Alvo" no ar. 
+		# Ele quer ficar na altura 'alvo_y', mas recuado a uma certa distância do jogador no eixo X.
+		var alvo_x = player_ref.global_position.x - (direction * distancia_ataque_x)
+		var ponto_alvo_2d = Vector2(alvo_x, alvo_y)
+		
+		# 3. Calcula a distância e a direção em graus até esse ponto no ar
+		var distancia_para_alvo = global_position.distance_to(ponto_alvo_2d)
+		var direcao_movimento = global_position.direction_to(ponto_alvo_2d)
+		
+		# 4. Acelera de forma fluida (isso cria as curvas no ar!)
+		if distancia_para_alvo > 10.0:
+			# Se estiver longe do ponto ideal, voa na direção dele
+			velocity = velocity.move_toward(direcao_movimento * velocidade_voo, aceleracao * delta)
+		else:
+			# Se já chegou no ponto perfeito, vai travando suavemente (hover)
+			velocity = velocity.move_toward(Vector2.ZERO, aceleracao * delta)
+		
+		# 5. Ataca se o tempo de recarga permitir
+		if can_attack:
+			iniciar_ataque_longo()
 
 func iniciar_ataque_longo() -> void:
 	can_attack = false
