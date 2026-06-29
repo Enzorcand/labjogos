@@ -1,5 +1,9 @@
 [gd_scene format=3 uid="uid://dt6fsxkisgj2x"]
 
+[ext_resource type="Script" uid="uid://bmhmsrlh3vywh" path="res://controles.gd" id="1_34qsr"]
+[ext_resource type="FontFile" uid="uid://1ba2kmahxfka" path="res://assets/Interface/BoldPixels.ttf" id="2_wplcm"]
+[ext_resource type="Script" uid="uid://d3i72nwtt5owj" path="res://controlesLabel.gd" id="3_wplcm"]
+
 [node name="Controles" type="Control" unique_id=1662211961]
 layout_mode = 3
 anchors_preset = 15
@@ -7,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_34qsr")
 metadata/_edit_use_anchors_ = true
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=479072340]
@@ -17,3 +22,29 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
+
+[node name="voltar" type="Button" parent="." unique_id=430718270]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.8420139
+anchor_top = 0.8734568
+anchor_right = 0.9782986
+anchor_bottom = 0.96141976
+offset_left = 105.0
+offset_top = 35.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_wplcm")
+theme_override_font_sizes/font_size = 54
+text = "Voltar"
+metadata/_edit_use_anchors_ = true
+
+[node name="Controles" type="Label" parent="." unique_id=1928048142]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 907.0
+grow_vertical = 2
+script = ExtResource("3_wplcm")
+
+[connection signal="pressed" from="voltar" to="." method="_on_voltar_pressed"]
