@@ -30,6 +30,8 @@ var colision_original_y: float = 0.0
 @export var aceleracao: float = 400.0 # Quão rápido ele faz curvas e arranca
 @export var distancia_ataque_x: float = 150.0 # Mantém uma certa distância do player
 
+var tempo_sem_jogador: float = 0.0
+
 # Controle da Altura
 var alvo_y: float = 0.0
 var tempo_troca_altura: float = 0.0
@@ -88,6 +90,14 @@ func _on_hitbox_body_entered(body: Node2D) -> void:
 
 func _physics_process(delta: float) -> void:
 	
+	if player_ref == null and estado_atual != Estado.DIE:
+		tempo_sem_jogador += delta
+		if tempo_sem_jogador >= 2.0:
+			_procurar_jogador_perdido()
+			tempo_sem_jogador = 0.0 # Reseta o contador para tentar novamente
+	else:
+		tempo_sem_jogador = 0.0 # Zera o timer se já estiver perseguindo o jogador
+
 	# Controle automático de subida e descida (só acontece se ele estiver vivo)
 	if estado_atual != Estado.DIE:
 		tempo_troca_altura += delta
@@ -116,7 +126,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	atualizar_animacao()
 	
-	# (Cola aqui em baixo o código da Flutuação com o sin() do passo anterior!)
+	# Código da Flutuação
 	if estado_atual != Estado.DIE:
 		tempo_flutuacao += delta
 		# Calcula o desvio usando a onda Seno
@@ -127,11 +137,39 @@ func _physics_process(delta: float) -> void:
 		hitbox.position.y = hitbox_original_y + movimento_onda
 		detection_area.position.y = detection_area_original_y + movimento_onda
 
+func _procurar_jogador_perdido() -> void:
+	var jogador = null
+	
+	# Tenta achar o jogador através do grupo
+	var players = get_tree().get_nodes_in_group("Player")
+	if players.size() > 0:
+		jogador = players[0]
+	else:
+		# Plano B: Se não achar pelo grupo, procura o nó que se chame "Player" na cena
+		jogador = get_tree().root.find_child("Player", true, false)
+	
+	# Se encontrou o jogador, calcula de qual lado ele está e usa a nova função para girar
+	if jogador:
+		var direcao_para_jogador = sign(jogador.global_position.x - global_position.x)
+		virar_boss(direcao_para_jogador)
+
+
+
+func virar_boss(nova_direcao: int) -> void:
+	if nova_direcao != 0 and direction != nova_direcao:
+		direction = nova_direcao
+		atualizar_animacao()
+		if detection_area:
+			detection_area.scale.x = direction
+		if hitbox:
+			hitbox.scale.x = direction
+		if edge_checker:
+			edge_checker.scale.x = direction
 
 func _patrol_behavior() -> void:
 	if is_on_wall() or (is_on_floor() and not edge_checker.is_colliding()):
-		direction *= -1
-		edge_checker.position.x *= -1 
+		# Em vez de mexer no edge_checker aqui, usamos a função virar_boss!
+		virar_boss(direction * -1)
 
 	velocity.x = direction * patrol_speed
 
@@ -150,7 +188,6 @@ func _chase_behavior() -> void:
 		else:
 			# Só anda se não for atirar
 			velocity.x = direction * chase_speed
-
 
 func atualizar_animacao():
 	if direction == 1:
@@ -197,7 +234,6 @@ func receber_dano(quantidade: int) -> void:
 	vida_atual -= quantidade
 	health_bar.value = vida_atual
 	
-	
 	if vida_atual <= 0:
 		morrer()
 
@@ -216,14 +252,11 @@ func receber_dano_percentual(porcentagem: float) -> void:
 	vida_atual -= int(dano_calculado)
 	health_bar.value = vida_atual
 	
-	
 	if vida_atual <= 0:
-		
 		morrer()
 		
 func _voo_patrol_behavior(delta: float) -> void:
 	# Como é um boss voador que espera pelo jogador, a patrulha dele é apenas ficar a flutuar no lugar
-	# Se quiseres, podes usar a mesma lógica do CHASE aqui mas usando pontos fixos do mapa!
 	var ponto_alvo_2d = Vector2(global_position.x, alvo_y)
 	var direcao_movimento = global_position.direction_to(ponto_alvo_2d)
 	
@@ -234,10 +267,9 @@ func _voo_patrol_behavior(delta: float) -> void:
 
 func _voo_chase_behavior(delta: float) -> void:
 	if player_ref != null:
-		# 1. Vira para o jogador
+		# 1. Vira para o jogador usando a nova função unificada!
 		var direcao_x = sign(player_ref.global_position.x - global_position.x)
-		if direcao_x != 0:
-			direction = direcao_x
+		virar_boss(direcao_x)
 		
 		# 2. Define o "Ponto Alvo" no ar. 
 		# Ele quer ficar na altura 'alvo_y', mas recuado a uma certa distância do jogador no eixo X.
@@ -284,4 +316,10 @@ func _disparar_projetil() -> void:
 	
 		tiro.global_position = global_position + Vector2(direction * 60, -30) 
 		
-		tiro.set("direction", direction)
+		var direcao_vetor = Vector2(direction, 0)
+		tiro.set("direction", direcao_vetor)
+		
+		if direction == -1:
+			tiro.rotation = PI 
+		else:
+			tiro.rotation = 0 
