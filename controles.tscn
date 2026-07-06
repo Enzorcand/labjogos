@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://dt6fsxkisgj2x"]
+
+[ext_resource type="Script" uid="uid://bmhmsrlh3vywh" path="res://controles.gd" id="1_34qsr"]
+[ext_resource type="FontFile" uid="uid://1ba2kmahxfka" path="res://assets/Interface/BoldPixels.ttf" id="2_wplcm"]
+
+[node name="Controles" type="Control" unique_id=1662211961]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_34qsr")
+metadata/_edit_use_anchors_ = true
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=479072340]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="voltar" type="Button" parent="." unique_id=430718270]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.8420139
+anchor_top = 0.8734568
+anchor_right = 0.9782986
+anchor_bottom = 0.96141976
+offset_left = 105.0
+offset_top = 35.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_wplcm")
+theme_override_font_sizes/font_size = 54
+text = "Voltar"
+metadata/_edit_use_anchors_ = true
+
+[node name="EscritoControles" type="Label" parent="." unique_id=1928048142]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.034722224
+anchor_top = 0.22839506
+anchor_right = 0.8220486
+anchor_bottom = 0.7993827
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_wplcm")
+theme_override_font_sizes/font_size = 44
+text = "Z - Atira
+Espaço - Pula
+Shift - Trava movimentação
+Seta esquerda - esquerda
+Seta direita - direita
+Seta baixo - mira p/ baixo
+Seta cima - mira p/ cima"
+metadata/_edit_use_anchors_ = true
+
+[node name="Titulo" type="Label" parent="." unique_id=576444175]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.36762154
+anchor_right = 0.63237846
+anchor_bottom = 0.09876543
+offset_top = 10.0
+offset_bottom = 10.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_wplcm")
+theme_override_font_sizes/font_size = 74
+text = "Controles"
+metadata/_edit_use_anchors_ = true
+
+[connection signal="pressed" from="voltar" to="." method="_on_voltar_pressed"]
