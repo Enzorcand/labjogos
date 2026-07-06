@@ -3,6 +3,7 @@ extends CharacterBody2D
 # Preload bullet scenes
 const BULLET_SCENE = preload("res://TiroDefault.tscn")
 const CHARGED_BULLET_SCENE = preload("res://TiroCarregado.tscn")
+var cena_tela_final = preload("res://tela_final.tscn")
 
 @onready var charge_bar = $ChargeBar
 @onready var shoot_spawn_point: Marker2D = $Marker2D 
@@ -138,4 +139,7 @@ func hit_kill() -> void:
 	set_deferred("collision_mask", 0)
 
 	await get_tree().create_timer(2.0).timeout
-	get_tree().reload_current_scene()
+	var tela = cena_tela_final.instantiate()
+	get_tree().current_scene.add_child(tela)
+	if tela.has_method("configurar_tela"):
+		tela.configurar_tela(false)

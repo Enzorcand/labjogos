@@ -4,7 +4,7 @@ signal player_died
 
 func _on_death_zone_body_entered(body: Node2D) -> void:
 	print("emited")
-	player_died.emit()
+	# player_died.emit()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

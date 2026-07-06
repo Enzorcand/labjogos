@@ -1,6 +1,10 @@
 [gd_scene format=3 uid="uid://bi2e2ym6nb1xa"]
 
+[ext_resource type="Script" uid="uid://buviw5qel6y4d" path="res://tela_final.gd" id="1_wbq4q"]
+[ext_resource type="FontFile" uid="uid://1ba2kmahxfka" path="res://assets/Interface/BoldPixels.ttf" id="2_im2dc"]
+
 [node name="CanvasLayer" type="CanvasLayer" unique_id=1566913635]
+script = ExtResource("1_wbq4q")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=537855568]
 offset_right = 1152.0
@@ -14,14 +18,23 @@ offset_bottom = 645.0
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=511913273]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1478765002]
+[node name="TituloLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1478765002]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_im2dc")
+theme_override_font_sizes/font_size = 55
 text = "VITÓRIA"
 
-[node name="Button" type="Button" parent="CenterContainer/VBoxContainer" unique_id=91332128]
+[node name="JogarNovamente" type="Button" parent="CenterContainer/VBoxContainer" unique_id=91332128]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_im2dc")
+theme_override_font_sizes/font_size = 30
 text = "Jogar novamente"
 
-[node name="Button2" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1742773031]
+[node name="VoltarMenu" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1742773031]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_im2dc")
+theme_override_font_sizes/font_size = 30
 text = "Voltar ao menu"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/JogarNovamente" to="." method="_on_jogar_novamente_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VoltarMenu" to="." method="_on_voltar_menu_pressed"]
