@@ -56,7 +56,7 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body.has_method("hit_kill"):
 		body.hit_kill()
-		queue_free()
+	queue_free()
 
 func angle_difference(from: float, to: float) -> float:
 	var diff = to - from

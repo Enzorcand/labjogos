@@ -17,7 +17,7 @@ var facing_direction: float = 1.0 # Keep track of last moved direction (1 or -1)
 
 @onready var sprite = $AnimatedSprite2D
 const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
+const JUMP_VELOCITY = -600.0
 
 var aiming_direction: Vector2 = Vector2.RIGHT
 

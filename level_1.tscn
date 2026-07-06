@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://766jsikflxl" path="res://Player.tscn" id="2_hn12h"]
 [ext_resource type="PackedScene" uid="uid://ch5fb2s4fjduo" path="res://golem.tscn" id="4_ihfcg"]
 [ext_resource type="Texture2D" uid="uid://l5io03wq8wx0" path="res://assets/Background/Tiles.png" id="5_5hph3"]
-[ext_resource type="PackedScene" path="res://background.tscn" id="6_j7kpp"]
+[ext_resource type="PackedScene" uid="uid://c3jxwg5abib7c" path="res://background.tscn" id="6_j7kpp"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_ihfcg"]
 tile_data = PackedInt32Array(196608, 655360, 5, 262144, 655360, 6, 327680, 655360, 7, 196609, 720896, 5, 262145, 720896, 6, 327681, 720896, 7, 196610, 786432, 5, 262146, 786432, 6, 327682, 786432, 7, 196611, 851968, 5, 262147, 851968, 6, 327683, 851968, 7, 65540, 917504, 3, 131076, 917504, 4, 196612, 917504, 5, 262148, 917504, 6, 327684, 917504, 7, 65541, 983040, 3, 131077, 983040, 4, 196613, 983040, 5, 262149, 983040, 6, 327685, 983040, 7, 6, 1048576, 2, 65542, 1048576, 3, 131078, 1048576, 4, 196614, 1048576, 5, 262150, 1048576, 6, 327686, 1048576, 7, 7, 1114112, 2, 65543, 1114112, 3, 131079, 1114112, 4, 196615, 1114112, 5, 262151, 1114112, 6, 327687, 1114112, 7, 196616, 1179648, 5, 262152, 1179648, 6, 327688, 1179648, 7, 196617, 1245184, 5, 262153, 1245184, 6, 327689, 1245184, 7)
@@ -504,4 +504,19 @@ position = Vector2(868, 418)
 shape = SubResource("SegmentShape2D_ihfcg")
 
 [node name="Golem" parent="." unique_id=173248879 instance=ExtResource("4_ihfcg")]
-position = Vector2(209, 496)
+light_mask = 2
+visibility_layer = 2
+position = Vector2(275, 234.00003)
+patrol_speed = 70.0
+chase_speed = 90.0
+gravity = 980.0
+vida_maxima = 100
+amplitude_flutuacao = 5.0
+velocidade_flutuacao = 3.0
+altura_baixa = 450.0
+altura_alta = 300.0
+velocidade_voo = 120.0
+aceleracao = 400.0
+distancia_ataque_x = 150.0
+altura_limiar_andar = 360.0
+attack_cooldown = 3.0

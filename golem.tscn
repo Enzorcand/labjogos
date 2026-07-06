@@ -413,7 +413,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5hph3"]
-size = Vector2(345, 178)
+size = Vector2(728, 178)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uo40p"]
 bg_color = Color(0.5024437, 0.7732663, 0.2787204, 1)
@@ -429,6 +429,19 @@ height = 45.333336
 [node name="Golem" type="CharacterBody2D" unique_id=173248879]
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_uo40p")
+patrol_speed = null
+chase_speed = null
+gravity = null
+vida_maxima = null
+amplitude_flutuacao = null
+velocidade_flutuacao = null
+altura_baixa = null
+altura_alta = null
+velocidade_voo = null
+aceleracao = null
+distancia_ataque_x = null
+altura_limiar_andar = null
+attack_cooldown = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1471601881]
 position = Vector2(0, 1)
@@ -438,7 +451,7 @@ animation = &"die"
 [node name="DetectionArea" type="Area2D" parent="." unique_id=2047026550]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=1325712288]
-position = Vector2(162.5, -2)
+position = Vector2(354, -2)
 shape = SubResource("RectangleShape2D_5hph3")
 
 [node name="RayCast2D" type="RayCast2D" parent="." unique_id=2000379872]
